@@ -28,7 +28,7 @@ public class TicketService {
 
         Ticket ticket = dtoToEntityMapping(dto);
 
-        ticket.setStatus(Status.IN_PROGRESS);
+        ticket.setStatus(Status.OPENED);
 
         ticket = ticketRepository.save(ticket);
         
@@ -39,7 +39,7 @@ public class TicketService {
 
         Ticket ticket = dtoToEntityMapping(dto);
 
-        ticket.setStatus(Status.IN_PROGRESS);
+        ticket.setStatus(Status.OPENED);
 
         ticket = ticketRepository.save(ticket);
         

@@ -7,8 +7,11 @@ import org.springframework.stereotype.Repository;
 
 import com.hexaware.bankticket.entity.Customer;
 
+
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Integer>{
     
     Optional<Customer> findByEmail(String email); 
+
+    Optional<Customer> findByUserUsername(String username);
 }
