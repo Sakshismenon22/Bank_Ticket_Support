@@ -30,6 +30,7 @@ public class Ticket {
     @JoinColumn(name = "customerId")
     private Customer customer;
     private Category category;
+    private String subject;
     private Status status;
     private String description;
     private LocalDateTime createdAt;

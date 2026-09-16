@@ -1,0 +1,80 @@
+package com.hexaware.bankticket.service;
+
+import java.time.LocalDateTime;
+
+import org.springframework.stereotype.Service;
+
+import com.hexaware.bankticket.dto.TicketDTO;
+import com.hexaware.bankticket.entity.Customer;
+import com.hexaware.bankticket.entity.Ticket;
+import com.hexaware.bankticket.enums.Status;
+import com.hexaware.bankticket.exceptions.CustomerNotFoundException;
+import com.hexaware.bankticket.exceptions.TicketNotFoundException;
+import com.hexaware.bankticket.repository.CustomerRepository;
+import com.hexaware.bankticket.repository.TicketRepository;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class TicketService {
+    
+    
+    private TicketRepository ticketRepository;
+
+    private CustomerRepository customerRepository;
+
+    public Ticket createTicket(TicketDTO dto) throws CustomerNotFoundException{
+
+        Ticket ticket = dtoToEntityMapping(dto);
+
+        ticket.setStatus(Status.IN_PROGRESS);
+
+        ticket = ticketRepository.save(ticket);
+        
+        return ticket;
+    }
+
+    public Ticket updateTicket(TicketDTO dto) throws CustomerNotFoundException{
+
+        Ticket ticket = dtoToEntityMapping(dto);
+
+        ticket.setStatus(Status.IN_PROGRESS);
+
+        ticket = ticketRepository.save(ticket);
+        
+        return ticket;
+
+    }
+
+    public String deleteTicket(int ticketId) throws TicketNotFoundException{
+
+        if(! ticketRepository.existsById(ticketId)){
+
+            throw new TicketNotFoundException("No matching ticket found");
+        }
+
+        ticketRepository.deleteById(ticketId);
+
+        return "Ticket deleted";
+    }
+
+    public Ticket dtoToEntityMapping(TicketDTO dto) throws CustomerNotFoundException{
+
+        Ticket ticket = new Ticket();
+
+        ticket.setCategory(dto.getCategory());
+        ticket.setCreatedAt(LocalDateTime.now());
+        ticket.setDescription(dto.getDescription());
+        ticket.setSubject(dto.getSubject());
+        
+        Customer customer = customerRepository.findById(dto.getCustomerId()).orElseThrow(() -> new CustomerNotFoundException("No matching customer found!"));
+        
+        ticket.setCustomer(customer);
+        ticket.setUpdatedAt(LocalDateTime.now());
+        
+        return ticket;
+
+    }
+
+}

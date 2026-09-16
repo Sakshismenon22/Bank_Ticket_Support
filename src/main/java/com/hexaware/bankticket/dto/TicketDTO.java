@@ -15,6 +15,7 @@ public class TicketDTO {
     private int ticketId;
     private int customerId;
     private Category category;
+    private String subject;
     private Status status;
     private String description;
     private LocalDateTime createdAt;
