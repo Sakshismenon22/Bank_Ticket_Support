@@ -24,7 +24,7 @@ public class TicketService {
 
     private CustomerRepository customerRepository;
 
-    public Ticket createTicket(TicketDTO dto) throws CustomerNotFoundException{
+    public TicketDTO createTicket(TicketDTO dto) throws CustomerNotFoundException{
 
         Ticket ticket = dtoToEntityMapping(dto);
 
@@ -32,10 +32,10 @@ public class TicketService {
 
         ticket = ticketRepository.save(ticket);
         
-        return ticket;
+        return entityToDTOMapping(ticket);
     }
 
-    public Ticket updateTicket(TicketDTO dto) throws CustomerNotFoundException{
+    public TicketDTO updateTicket(TicketDTO dto) throws CustomerNotFoundException{
 
         Ticket ticket = dtoToEntityMapping(dto);
 
@@ -43,7 +43,7 @@ public class TicketService {
 
         ticket = ticketRepository.save(ticket);
         
-        return ticket;
+        return entityToDTOMapping(ticket);
 
     }
 
@@ -75,6 +75,21 @@ public class TicketService {
         
         return ticket;
 
+    }
+
+    public TicketDTO entityToDTOMapping(Ticket ticket){
+
+        TicketDTO dto = new TicketDTO();
+
+        dto.setCategory(ticket.getCategory());
+        dto.setCreatedAt(ticket.getCreatedAt());
+        dto.setCustomerId(ticket.getCustomer().getCustomerId());
+        dto.setDescription(ticket.getDescription());
+        dto.setSubject(ticket.getSubject());
+        dto.setTicketId(ticket.getTicketId());
+        dto.setUpdatedAt(ticket.getUpdatedAt());
+
+        return dto;
     }
 
 }

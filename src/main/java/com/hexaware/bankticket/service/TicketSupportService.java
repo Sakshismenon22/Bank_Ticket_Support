@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.hexaware.bankticket.dto.TicketDTO;
 import com.hexaware.bankticket.entity.Ticket;
 import com.hexaware.bankticket.enums.Status;
 import com.hexaware.bankticket.exceptions.TicketNotFoundException;
@@ -20,12 +21,16 @@ public class TicketSupportService {
 
     CustomerRepository customerRepository;
 
-    public List<Ticket> getAllTickets(){
+    public List<TicketDTO> getAllTickets(){
         
-        return ticketRepository.findAll();
+       List<Ticket> list =  ticketRepository.findAll();
+
+        List<TicketDTO> dtoList = list.stream().map(ticket -> entityToDTOMapping(ticket)).toList();
+    
+        return dtoList;
     }
 
-    public Ticket updateStatus(int ticketId, Status newStatus) throws TicketNotFoundException{
+    public TicketDTO updateStatus(int ticketId, Status newStatus) throws TicketNotFoundException{
 
         Ticket ticket = ticketRepository.findById(ticketId).orElseThrow(() -> new TicketNotFoundException("No matching ticket found"));
 
@@ -39,7 +44,22 @@ public class TicketSupportService {
             }
         }
 
-        return ticket;
+        return entityToDTOMapping(ticket);
+    }
+
+    public TicketDTO entityToDTOMapping(Ticket ticket){
+
+        TicketDTO dto = new TicketDTO();
+
+        dto.setCategory(ticket.getCategory());
+        dto.setCreatedAt(ticket.getCreatedAt());
+        dto.setCustomerId(ticket.getCustomer().getCustomerId());
+        dto.setDescription(ticket.getDescription());
+        dto.setSubject(ticket.getSubject());
+        dto.setTicketId(ticket.getTicketId());
+        dto.setUpdatedAt(ticket.getUpdatedAt());
+
+        return dto;
     }
 
 
