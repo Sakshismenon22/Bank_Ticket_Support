@@ -1,7 +1,5 @@
 package com.hexaware.bankticket.dto;
 
-import com.hexaware.bankticket.enums.Role;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,5 +15,5 @@ public class AuthResponse {
 
     private String token;
 
-    private Role role;
+    private String role;
 }

@@ -59,6 +59,13 @@ public class TicketService {
         return "Ticket deleted";
     }
 
+    public TicketDTO getTicketById(int ticketId) throws TicketNotFoundException{
+
+        Ticket ticket = ticketRepository.findById(ticketId).orElseThrow(() -> new TicketNotFoundException("Ticket not found"));
+
+        return entityToDTOMapping(ticket);
+    }
+
     public Ticket dtoToEntityMapping(TicketDTO dto) throws CustomerNotFoundException{
 
         Ticket ticket = new Ticket();

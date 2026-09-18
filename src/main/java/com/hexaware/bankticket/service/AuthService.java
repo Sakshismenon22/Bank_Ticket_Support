@@ -5,7 +5,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.hexaware.bankticket.config.SecurityConfig;
 import com.hexaware.bankticket.dto.AuthResponse;
 import com.hexaware.bankticket.dto.LoginDTO;
 import com.hexaware.bankticket.dto.RegisterDTO;
@@ -15,6 +14,7 @@ import com.hexaware.bankticket.enums.Role;
 import com.hexaware.bankticket.exceptions.UserNotFoundException;
 import com.hexaware.bankticket.repository.CustomerRepository;
 import com.hexaware.bankticket.repository.UserRepository;
+import com.hexaware.bankticket.security.JwtService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,13 +22,15 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor 
 public class AuthService {
     
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    private CustomerRepository customerRepository;
+    private final CustomerRepository customerRepository;
 
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
+
+    private final JwtService jwtService;
 
     public String register(RegisterDTO dto) throws UserNotFoundException{
 
@@ -66,8 +68,15 @@ public class AuthService {
 
         User user = userRepository.findByUsername(dto.getUsername()).orElseThrow(()-> new UserNotFoundException("User not found"));
 
-        return new AuthResponse();
+        String token = jwtService.generateToken(user.getUsername(), user.getRole().name());
 
+        AuthResponse response = new AuthResponse();
+
+        response.setRole(user.getRole().name());
+        response.setUsername(user.getUsername());
+        response.setToken(token);
+
+        return response;
         
     }
 
