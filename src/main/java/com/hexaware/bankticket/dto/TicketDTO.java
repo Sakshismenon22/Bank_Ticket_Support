@@ -12,8 +12,8 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TicketDTO {
-    private int ticketId;
-    private int customerId;
+    private Integer ticketId;
+    private Integer customerId;
     private Category category;
     private String subject;
     private Status status;

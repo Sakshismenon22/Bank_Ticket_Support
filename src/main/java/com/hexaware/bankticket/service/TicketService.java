@@ -1,8 +1,11 @@
 package com.hexaware.bankticket.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.hexaware.bankticket.dto.TicketDTO;
@@ -67,10 +70,20 @@ public class TicketService {
         return entityToDTOMapping(ticket);
     }
 
-    // public List<TicketDTO> getTicketByUsername(String username){
+    public List<TicketDTO> getMyTickets() throws CustomerNotFoundException{
         
-    //     List<TicketDTO> list = 
-    // }
+        Authentication authentictaion = SecurityContextHolder.getContext().getAuthentication();
+
+        String username = authentictaion.getName();
+
+        Customer customer = customerRepository.findByUserUsername(username).orElseThrow(() -> new CustomerNotFoundException("No customer found"));
+    
+        List<Ticket> list = ticketRepository.findByCustomerCustomerId(customer.getCustomerId());
+
+        return list.stream().map(this :: entityToDTOMapping).toList();
+
+        
+    }
 
     public Ticket dtoToEntityMapping(TicketDTO dto) throws CustomerNotFoundException{
 

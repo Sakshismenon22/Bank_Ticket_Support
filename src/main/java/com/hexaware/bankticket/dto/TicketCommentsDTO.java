@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TicketCommentsDTO {
-    private int commentId;
-    private int userId;
-    private int ticketId;
+    private Integer commentId;
+    private Integer userId;
+    private Integer ticketId;
     private String message;
     private LocalDateTime createdAt;
 }

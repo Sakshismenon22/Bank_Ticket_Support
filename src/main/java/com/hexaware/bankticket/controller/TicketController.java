@@ -1,5 +1,7 @@
 package com.hexaware.bankticket.controller;
 
+import java.util.List;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,6 +49,12 @@ public class TicketController {
     public TicketDTO getTicketById(@PathVariable int ticketId) throws TicketNotFoundException{
 
         return ticketService.getTicketById(ticketId);
+    }
+
+    @PreAuthorize("hasRole('CUSTOMER')")
+    @GetMapping("/my-tickets")
+    public List<TicketDTO> getMyTickets() throws CustomerNotFoundException{
+        return ticketService.getMyTickets();
     }
 
     

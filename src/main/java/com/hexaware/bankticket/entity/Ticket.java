@@ -6,6 +6,8 @@ import com.hexaware.bankticket.enums.Category;
 import com.hexaware.bankticket.enums.Status;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -29,8 +31,10 @@ public class Ticket {
     @ManyToOne
     @JoinColumn(name = "customerId")
     private Customer customer;
+    @Enumerated(EnumType.STRING)
     private Category category;
     private String subject;
+    @Enumerated(EnumType.STRING)
     private Status status;
     private String description;
     private LocalDateTime createdAt;
