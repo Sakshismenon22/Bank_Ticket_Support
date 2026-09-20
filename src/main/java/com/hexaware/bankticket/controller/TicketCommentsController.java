@@ -20,19 +20,20 @@ import lombok.RequiredArgsConstructor;
 @RestController 
 @RequestMapping("/api/ticket-comments")
 @RequiredArgsConstructor
+@PreAuthorize("hasAnyRole('CUSTOMER', 'BANK_SUPPORT')")
 public class TicketCommentsController {
     
     private final TicketCommentsService commentsService;
 
-    @PreAuthorize("hasAnyRole('CUSTOMER', 'BANK_SUPPORT')")
+    
     @PostMapping("/create-comment/{ticketId}")
-    public TicketCommentsDTO createTicketComment(@PathVariable int ticketId, @RequestBody TicketCommentsDTO dto) throws UserNotFoundException, TicketNotFoundException{
+    public TicketCommentsDTO createTicketComment(@PathVariable Integer ticketId, @RequestBody TicketCommentsDTO dto) throws UserNotFoundException, TicketNotFoundException{
         return commentsService.createTicketComment(ticketId, dto);
     }
 
-    @PreAuthorize("hasAnyRole('CUSTOMER', 'BANK_SUPPORT')")
+    
     @GetMapping("/all-comments-by-id/{ticketId}")
-    public List<TicketCommentsDTO> getAllCommentsById(@PathVariable int ticketId){
+    public List<TicketCommentsDTO> getAllCommentsById(@PathVariable Integer ticketId){
         return commentsService.getAllCommentsById(ticketId);
     }
 

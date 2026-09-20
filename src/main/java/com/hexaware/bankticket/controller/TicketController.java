@@ -25,11 +25,12 @@ import lombok.RequiredArgsConstructor;
 @RestController 
 @RequestMapping("/api/ticket")
 @RequiredArgsConstructor 
+@PreAuthorize("hasRole('CUSTOMER')")
 public class TicketController {
     
     private final TicketService ticketService;
 
-    @PreAuthorize("hasRole('CUSTOMER')")
+    
     @PostMapping("/create-ticket")
     public ResponseEntity<TicketDTO> createTicket(@RequestBody TicketDTO dto) throws CustomerNotFoundException{
        
@@ -43,31 +44,23 @@ public class TicketController {
 
     }
 
-    @PreAuthorize("hasRole('CUSTOMER')")
+    
     @PutMapping("/update-ticket/{ticketId}")
-    public ResponseEntity<TicketDTO> updateTicket(@PathVariable int ticketId, @RequestBody TicketDTO dto, Principal principal) throws TicketNotFoundException, CustomerNotFoundException{
+    public ResponseEntity<TicketDTO> updateTicket(@PathVariable int ticketId, @RequestBody TicketDTO dto) throws TicketNotFoundException, CustomerNotFoundException{
         
-        String username = principal.getName();
         
-        TicketDTO ticketDto = ticketService.updateTicket(ticketId, dto, username);
+        
+        TicketDTO ticketDto = ticketService.updateTicket(ticketId, dto);
 
         return ResponseEntity.ok(ticketDto);
     }
 
-    @PreAuthorize("hasRole('CUSTOMER')")
+   
     @DeleteMapping("/delete-ticket/{ticketId}")
     public String deleteTicket(@PathVariable int ticketId) throws TicketNotFoundException{
         return ticketService.deleteTicket(ticketId);
     }
-
-    // @PreAuthorize("hasRole('CUSTOMER')")
-    // @GetMapping("/get-ticket-by-id/{ticketId}")
-    // public TicketDTO getTicketById(@PathVariable int ticketId) throws TicketNotFoundException{
-
-    //     return ticketService.getTicketById(ticketId);
-    // }
-
-    @PreAuthorize("hasRole('CUSTOMER')")
+    
     @GetMapping("/my-tickets")
     public List<TicketDTO> getMyTickets() throws CustomerNotFoundException{
         return ticketService.getMyTickets();

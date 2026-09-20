@@ -13,7 +13,6 @@ import com.hexaware.bankticket.entity.Ticket;
 import com.hexaware.bankticket.enums.Status;
 import com.hexaware.bankticket.exceptions.CustomerNotFoundException;
 import com.hexaware.bankticket.exceptions.TicketNotFoundException;
-import com.hexaware.bankticket.helper.TicketHelper;
 import com.hexaware.bankticket.repository.CustomerRepository;
 import com.hexaware.bankticket.repository.TicketRepository;
 
@@ -23,32 +22,24 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TicketService {
     
-    
     private final TicketRepository ticketRepository;
 
     private final CustomerRepository customerRepository;
 
-    private final TicketHelper ticketHelper;
-
     public TicketDTO createTicket(TicketDTO dto) throws CustomerNotFoundException{
-
-        
               
         Ticket ticket = dtoToEntityMapping(dto);
 
         ticket.setStatus(Status.OPENED);
-
-        
 
         Ticket savedTicket = ticketRepository.save(ticket);
         
         return entityToDTOMapping(savedTicket);
     }
 
-    public TicketDTO updateTicket(int ticketId, TicketDTO dto, String username) throws TicketNotFoundException, CustomerNotFoundException{
+    public TicketDTO updateTicket(int ticketId, TicketDTO dto) throws TicketNotFoundException, CustomerNotFoundException{
 
-        
-        Ticket ticket = ticketHelper.getCustomerTicket(ticketId, username);
+        Ticket ticket = ticketRepository.findById(ticketId).orElseThrow(() -> new TicketNotFoundException("No ticket found"));
 
         ticket.setCategory(dto.getCategory());
         ticket.setSubject(dto.getSubject());
@@ -92,7 +83,6 @@ public class TicketService {
 
         return list.stream().map(this :: entityToDTOMapping).toList();
 
-        
     }
 
     public Ticket dtoToEntityMapping(TicketDTO dto) throws CustomerNotFoundException{

@@ -34,15 +34,7 @@ public class TicketSupportService {
 
         Ticket ticket = ticketRepository.findById(ticketId).orElseThrow(() -> new TicketNotFoundException("No matching ticket found"));
 
-        if(ticket.getStatus() == (Status.OPENED)){
-
-            if(newStatus == (Status.IN_PROGRESS)){
-                ticket.setStatus(newStatus);
-            }
-            if(newStatus == (Status.CLOSED)){
-                ticket.setStatus(newStatus);
-            }
-        }
+        ticket.setStatus(newStatus);
 
         Ticket updatedTicket = ticketRepository.save(ticket);
 

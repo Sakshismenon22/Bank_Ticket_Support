@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -36,51 +37,47 @@ public class SecurityConfig {
         return configuration.getAuthenticationManager();
     }
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http
-                .csrf(csrf -> csrf.disable())
-                .cors(cors -> {})
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/register", "/auth/login").permitAll()
-                        .requestMatchers("/api/ticket/**")
-                        .hasRole("CUSTOMER")
-                        .requestMatchers("/api/ticket-comments/**")
-                        .hasAnyRole("CUSTOMER", "BANK_SUPPORT")
-                        .requestMatchers("/api/ticket-support/**")
-                        .hasRole("BANK_SUPPORT")
-                        .anyRequest().authenticated()
-                )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
+   @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .csrf(csrf -> csrf.disable())
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
+            .authorizeHttpRequests(auth -> auth.requestMatchers(HttpMethod.OPTIONS, "/**")
+                                                .permitAll()
+                                                .requestMatchers(
+                                                    "/api/auth/register",
+                                                    "/api/auth/login",
+                                                    "/swagger-ui/**",
+                                                    "/swagger-ui.html",
+                                                    "/v3/api-docs/**")
+                                                .permitAll()
+                                                .requestMatchers("/api/ticket/**")
+                                                .hasRole("CUSTOMER")
+                                                .requestMatchers("/api/ticket-comments/**")
+                                                .hasAnyRole("CUSTOMER", "BANK_SUPPORT")
+                                                .requestMatchers("/api/ticket-support/**")
+                                                .hasRole("BANK_SUPPORT")
+                                                .anyRequest()
+                                                .authenticated()
+        
+        )
+        .addFilterBefore(jwtAuthenticationFilter,UsernamePasswordAuthenticationFilter.class);
+        return http.build();
     }
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource(){
-
+     @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-
-        configuration.setAllowedOrigins(List.of("http://localhost:*", "http://127.0.0.1.*"));
-
-        configuration.setAllowedMethods(List.of(
-            "GET",
-            "POST",
-            "PUT",
-            "DELETE",
-            "OPTIONS"
-        ));
-
-        configuration.setAllowedHeaders(List.of("*"));
-
-        configuration.setAllowCredentials(true);
+        configuration.setAllowedOriginPatterns(java.util.List.of(
+            "http://localhost:*",
+            "http://127.0.0.1:*"));
+        configuration.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(java.util.List.of("*"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-
         source.registerCorsConfiguration("/**", configuration);
-
         return source;
-
     }
 
 }

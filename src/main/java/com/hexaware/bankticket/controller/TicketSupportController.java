@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hexaware.bankticket.dto.TicketDTO;
@@ -18,21 +19,22 @@ import lombok.RequiredArgsConstructor;
 
 @RestController 
 @RequestMapping ("/api/ticket-support")
+@PreAuthorize("hasRole('BANK_SUPPORT')")
 @RequiredArgsConstructor 
 public class TicketSupportController {
     
     private final TicketSupportService supportService;
 
-    @PreAuthorize("hasRole('BANK_SUPPORT')")
+    
     @GetMapping("/get-all-tickets")
     public List<TicketDTO> getAllTickets(){
 
         return supportService.getAllTickets();
     }
 
-    @PreAuthorize("hasRole('BANK_SUPPORT')")
+  
     @PutMapping("/update-status/{ticketId}/{status}")
-    public TicketDTO updateStatus(@PathVariable int ticketId, @PathVariable Status status) throws TicketNotFoundException{
+    public TicketDTO updateStatus(@PathVariable int ticketId, @RequestParam Status status) throws TicketNotFoundException{
         return supportService.updateStatus(ticketId, status);
     }
 
