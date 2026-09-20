@@ -1,7 +1,6 @@
 package com.hexaware.bankticket.service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.security.core.Authentication;
@@ -14,6 +13,7 @@ import com.hexaware.bankticket.entity.Ticket;
 import com.hexaware.bankticket.enums.Status;
 import com.hexaware.bankticket.exceptions.CustomerNotFoundException;
 import com.hexaware.bankticket.exceptions.TicketNotFoundException;
+import com.hexaware.bankticket.helper.TicketHelper;
 import com.hexaware.bankticket.repository.CustomerRepository;
 import com.hexaware.bankticket.repository.TicketRepository;
 
@@ -28,26 +28,36 @@ public class TicketService {
 
     private final CustomerRepository customerRepository;
 
+    private final TicketHelper ticketHelper;
+
     public TicketDTO createTicket(TicketDTO dto) throws CustomerNotFoundException{
 
+        
+              
         Ticket ticket = dtoToEntityMapping(dto);
 
         ticket.setStatus(Status.OPENED);
 
-        ticket = ticketRepository.save(ticket);
         
-        return entityToDTOMapping(ticket);
+
+        Ticket savedTicket = ticketRepository.save(ticket);
+        
+        return entityToDTOMapping(savedTicket);
     }
 
-    public TicketDTO updateTicket(TicketDTO dto) throws CustomerNotFoundException{
+    public TicketDTO updateTicket(int ticketId, TicketDTO dto, String username) throws TicketNotFoundException, CustomerNotFoundException{
 
-        Ticket ticket = dtoToEntityMapping(dto);
-
-        ticket.setStatus(Status.OPENED);
-
-        ticket = ticketRepository.save(ticket);
         
-        return entityToDTOMapping(ticket);
+        Ticket ticket = ticketHelper.getCustomerTicket(ticketId, username);
+
+        ticket.setCategory(dto.getCategory());
+        ticket.setSubject(dto.getSubject());
+        ticket.setDescription(dto.getDescription());
+        ticket.setUpdatedAt(LocalDateTime.now());
+
+        Ticket updatedTicket = ticketRepository.save(ticket);
+        
+        return entityToDTOMapping(updatedTicket);
 
     }
 
@@ -63,7 +73,7 @@ public class TicketService {
         return "Ticket deleted";
     }
 
-    public TicketDTO getTicketById(int ticketId) throws TicketNotFoundException{
+    public TicketDTO getTicketById(int ticketId, String username) throws TicketNotFoundException{
 
         Ticket ticket = ticketRepository.findById(ticketId).orElseThrow(() -> new TicketNotFoundException("Ticket not found"));
 

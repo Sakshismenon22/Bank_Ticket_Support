@@ -8,7 +8,7 @@ import com.hexaware.bankticket.dto.TicketDTO;
 import com.hexaware.bankticket.entity.Ticket;
 import com.hexaware.bankticket.enums.Status;
 import com.hexaware.bankticket.exceptions.TicketNotFoundException;
-import com.hexaware.bankticket.repository.CustomerRepository;
+
 import com.hexaware.bankticket.repository.TicketRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -19,13 +19,13 @@ public class TicketSupportService {
     
     private final TicketRepository ticketRepository;
 
-    private final CustomerRepository customerRepository;
+
 
     public List<TicketDTO> getAllTickets(){
         
        List<Ticket> list =  ticketRepository.findAll();
 
-        List<TicketDTO> dtoList = list.stream().map(ticket -> entityToDTOMapping(ticket)).toList();
+        List<TicketDTO> dtoList = list.stream().map(this :: entityToDTOMapping).toList();
     
         return dtoList;
     }
@@ -44,7 +44,9 @@ public class TicketSupportService {
             }
         }
 
-        return entityToDTOMapping(ticket);
+        Ticket updatedTicket = ticketRepository.save(ticket);
+
+        return entityToDTOMapping(updatedTicket);
     }
 
     public TicketDTO entityToDTOMapping(Ticket ticket){

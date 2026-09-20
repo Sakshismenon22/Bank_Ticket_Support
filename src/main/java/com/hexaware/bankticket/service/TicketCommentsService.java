@@ -28,11 +28,11 @@ public class TicketCommentsService {
 
     private final UserRepository userRepository;
 
-    public TicketCommentsDTO createTicketComment(TicketCommentsDTO dto) throws UserNotFoundException, TicketNotFoundException{
+    public TicketCommentsDTO createTicketComment(int ticketId, TicketCommentsDTO dto) throws UserNotFoundException, TicketNotFoundException{
 
         userRepository.findById(dto.getUserId()).orElseThrow(() -> new UserNotFoundException("No user found"));
 
-        ticketRepository.findById(dto.getTicketId()).orElseThrow(() -> new TicketNotFoundException("No ticket found"));
+        ticketRepository.findById(ticketId).orElseThrow(() -> new TicketNotFoundException("No ticket found"));
         
         TicketComments ticketComments = dtoToEntityMapping(dto);
 

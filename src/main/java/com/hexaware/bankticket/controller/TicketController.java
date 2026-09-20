@@ -1,7 +1,10 @@
 package com.hexaware.bankticket.controller;
 
+import java.security.Principal;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,14 +31,27 @@ public class TicketController {
 
     @PreAuthorize("hasRole('CUSTOMER')")
     @PostMapping("/create-ticket")
-    public TicketDTO createTicket(@RequestBody TicketDTO dto) throws CustomerNotFoundException{
-        return ticketService.createTicket(dto);
+    public ResponseEntity<TicketDTO> createTicket(@RequestBody TicketDTO dto) throws CustomerNotFoundException{
+       
+       
+
+       
+        TicketDTO ticketDto = ticketService.createTicket(dto);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                                .body(ticketDto);
+
     }
 
     @PreAuthorize("hasRole('CUSTOMER')")
-    @PutMapping("/update-ticket")
-    public TicketDTO updateTicket(@RequestBody TicketDTO dto) throws CustomerNotFoundException{
-        return ticketService.updateTicket(dto);
+    @PutMapping("/update-ticket/{ticketId}")
+    public ResponseEntity<TicketDTO> updateTicket(@PathVariable int ticketId, @RequestBody TicketDTO dto, Principal principal) throws TicketNotFoundException, CustomerNotFoundException{
+        
+        String username = principal.getName();
+        
+        TicketDTO ticketDto = ticketService.updateTicket(ticketId, dto, username);
+
+        return ResponseEntity.ok(ticketDto);
     }
 
     @PreAuthorize("hasRole('CUSTOMER')")
@@ -44,12 +60,12 @@ public class TicketController {
         return ticketService.deleteTicket(ticketId);
     }
 
-    @PreAuthorize("hasRole('CUSTOMER')")
-    @GetMapping("/get-ticket-by-id/{ticketId}")
-    public TicketDTO getTicketById(@PathVariable int ticketId) throws TicketNotFoundException{
+    // @PreAuthorize("hasRole('CUSTOMER')")
+    // @GetMapping("/get-ticket-by-id/{ticketId}")
+    // public TicketDTO getTicketById(@PathVariable int ticketId) throws TicketNotFoundException{
 
-        return ticketService.getTicketById(ticketId);
-    }
+    //     return ticketService.getTicketById(ticketId);
+    // }
 
     @PreAuthorize("hasRole('CUSTOMER')")
     @GetMapping("/my-tickets")

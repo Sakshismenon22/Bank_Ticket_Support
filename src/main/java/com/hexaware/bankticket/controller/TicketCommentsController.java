@@ -25,9 +25,9 @@ public class TicketCommentsController {
     private final TicketCommentsService commentsService;
 
     @PreAuthorize("hasAnyRole('CUSTOMER', 'BANK_SUPPORT')")
-    @PostMapping("/create-comment")
-    public TicketCommentsDTO createTicketComment(@RequestBody TicketCommentsDTO dto) throws UserNotFoundException, TicketNotFoundException{
-        return commentsService.createTicketComment(dto);
+    @PostMapping("/create-comment/{ticketId}")
+    public TicketCommentsDTO createTicketComment(@PathVariable int ticketId, @RequestBody TicketCommentsDTO dto) throws UserNotFoundException, TicketNotFoundException{
+        return commentsService.createTicketComment(ticketId, dto);
     }
 
     @PreAuthorize("hasAnyRole('CUSTOMER', 'BANK_SUPPORT')")
