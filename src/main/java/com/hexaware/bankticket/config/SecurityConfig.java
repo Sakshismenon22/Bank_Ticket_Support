@@ -43,7 +43,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/ticket-comments/**")
                         .hasAnyRole("CUSTOMER", "BANK_SUPPORT")
                         .requestMatchers("/api/ticket-support/**")
-                        .hasRole("BACNK_SUPPORT")
+                        .hasRole("BANK_SUPPORT")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
