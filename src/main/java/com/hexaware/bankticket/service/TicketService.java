@@ -1,6 +1,7 @@
 package com.hexaware.bankticket.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -20,9 +21,9 @@ import lombok.RequiredArgsConstructor;
 public class TicketService {
     
     
-    private TicketRepository ticketRepository;
+    private final TicketRepository ticketRepository;
 
-    private CustomerRepository customerRepository;
+    private final CustomerRepository customerRepository;
 
     public TicketDTO createTicket(TicketDTO dto) throws CustomerNotFoundException{
 
@@ -66,6 +67,11 @@ public class TicketService {
         return entityToDTOMapping(ticket);
     }
 
+    // public List<TicketDTO> getTicketByUsername(String username){
+        
+    //     List<TicketDTO> list = 
+    // }
+
     public Ticket dtoToEntityMapping(TicketDTO dto) throws CustomerNotFoundException{
 
         Ticket ticket = new Ticket();
@@ -95,6 +101,7 @@ public class TicketService {
         dto.setSubject(ticket.getSubject());
         dto.setTicketId(ticket.getTicketId());
         dto.setUpdatedAt(ticket.getUpdatedAt());
+        dto.setStatus(ticket.getStatus());
 
         return dto;
     }

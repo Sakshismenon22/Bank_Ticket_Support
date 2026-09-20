@@ -2,6 +2,7 @@ package com.hexaware.bankticket.controller;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,16 +19,18 @@ import lombok.RequiredArgsConstructor;
 
 @RestController 
 @RequestMapping("/api/ticket-comments")
-@RequiredArgsConstructor 
+@RequiredArgsConstructor
 public class TicketCommentsController {
     
-    TicketCommentsService commentsService;
+    private final TicketCommentsService commentsService;
 
+    @PreAuthorize("hasAnyRole('CUSTOMER', 'BANK_SUPPORT')")
     @PostMapping("/create-comment")
     public TicketCommentsDTO createTicketComment(@RequestBody TicketCommentsDTO dto) throws UserNotFoundException, TicketNotFoundException{
         return commentsService.createTicketComment(dto);
     }
 
+    @PreAuthorize("hasAnyRole('CUSTOMER', 'BANK_SUPPORT')")
     @GetMapping("/all-comments-by-id/{ticketId}")
     public List<TicketCommentsDTO> getAllCommentsById(@PathVariable int ticketId){
         return commentsService.getAllCommentsById(ticketId);

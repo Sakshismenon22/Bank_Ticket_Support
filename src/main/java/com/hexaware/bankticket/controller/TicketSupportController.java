@@ -2,6 +2,7 @@ package com.hexaware.bankticket.controller;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -20,14 +21,16 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor 
 public class TicketSupportController {
     
-    private TicketSupportService supportService;
+    private final TicketSupportService supportService;
 
+    @PreAuthorize("hasRole('BANK_SUPPORT')")
     @GetMapping("/get-all-tickets")
     public List<TicketDTO> getAllTickets(){
 
         return supportService.getAllTickets();
     }
 
+    @PreAuthorize("hasRole('BANK_SUPPORT')")
     @PutMapping("/update-status/{ticketId}/{status}")
     public TicketDTO updateStatus(@PathVariable int ticketId, @PathVariable Status status) throws TicketNotFoundException{
         return supportService.updateStatus(ticketId, status);

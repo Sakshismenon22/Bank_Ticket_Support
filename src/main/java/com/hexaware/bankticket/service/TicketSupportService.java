@@ -17,9 +17,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TicketSupportService {
     
-    TicketRepository ticketRepository;
+    private final TicketRepository ticketRepository;
 
-    CustomerRepository customerRepository;
+    private final CustomerRepository customerRepository;
 
     public List<TicketDTO> getAllTickets(){
         

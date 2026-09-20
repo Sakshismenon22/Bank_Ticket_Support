@@ -34,8 +34,8 @@ public class AuthService {
 
     public String register(RegisterDTO dto) throws UserNotFoundException{
 
-        if(!userRepository.existsByUsername(dto.getUsername())){
-            throw new UserNotFoundException("No username found");
+        if(userRepository.existsByUsername(dto.getUsername())){
+            throw new RuntimeException("Username already exixts.");
         }
 
         String hashedPassword = passwordEncoder.encode(dto.getPassword());

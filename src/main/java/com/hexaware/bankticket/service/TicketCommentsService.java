@@ -7,7 +7,9 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.hexaware.bankticket.dto.TicketCommentsDTO;
+import com.hexaware.bankticket.entity.Ticket;
 import com.hexaware.bankticket.entity.TicketComments;
+import com.hexaware.bankticket.entity.User;
 import com.hexaware.bankticket.exceptions.TicketNotFoundException;
 import com.hexaware.bankticket.exceptions.UserNotFoundException;
 import com.hexaware.bankticket.repository.TicketCommentsRepository;
@@ -20,11 +22,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TicketCommentsService {
     
-    TicketRepository ticketRepository;
+    private final TicketRepository ticketRepository;
 
-    TicketCommentsRepository commentsRepository;
+    private final TicketCommentsRepository commentsRepository;
 
-    UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public TicketCommentsDTO createTicketComment(TicketCommentsDTO dto) throws UserNotFoundException, TicketNotFoundException{
 
@@ -54,13 +56,20 @@ public class TicketCommentsService {
         
     }
 
-    public TicketComments dtoToEntityMapping(TicketCommentsDTO dto){
+    public TicketComments dtoToEntityMapping(TicketCommentsDTO dto)throws UserNotFoundException, TicketNotFoundException{
 
         TicketComments ticketComments = new TicketComments();
 
         ticketComments.setCreatedAt(LocalDateTime.now());
         ticketComments.setMessage(dto.getMessage());
 
+        User user = userRepository.findById(dto.getUserId()).orElseThrow(() -> new UserNotFoundException("No matchinng user found"));
+
+        Ticket ticket = ticketRepository.findById(dto.getTicketId()).orElseThrow(() -> new TicketNotFoundException("No ticket found"));
+
+        ticketComments.setUser(user);
+        ticketComments.setTicket(ticket);
+        
         return ticketComments;
     }
 
